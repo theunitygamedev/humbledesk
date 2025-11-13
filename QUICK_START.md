@@ -35,7 +35,7 @@ Create `src/HD.API/appsettings.Development.json`:
     "Audience": "api://default"
   },
   "Cors": {
-    "AllowedOrigins": ["http://localhost:5173"]
+    "AllowedOrigins": ["http://localhost:5174"]
   }
 }
 ```
@@ -55,8 +55,8 @@ dotnet ef database update --startup-project ../HD.API
 cd ../HD.API
 dotnet run
 
-# API will be available at https://localhost:7001
-# Swagger UI at https://localhost:7001/swagger
+# API will be available at https://localhost:7200
+# Swagger UI at https://localhost:7200/swagger
 ```
 
 ## 3. Frontend Setup
@@ -72,7 +72,7 @@ cp .env.example .env.local
 
 Edit `client/.env.local`:
 ```env
-VITE_API_BASE_URL=https://localhost:7001/api
+VITE_API_BASE_URL=https://localhost:7200/api
 VITE_OKTA_ISSUER=https://dev-XXXXXXX.okta.com/oauth2/default
 VITE_OKTA_CLIENT_ID=0oaXXXXXXXXXXXXXXXX
 ```
@@ -86,7 +86,7 @@ npm install
 # Run development server
 npm run dev
 
-# Open browser to http://localhost:5173
+# Open browser to http://localhost:5174
 ```
 
 ## 4. Okta Configuration
@@ -107,10 +107,10 @@ npm run dev
 4. Configure:
    - **App Name:** HumbleDesk
    - **Grant Type:** Authorization Code (PKCE enabled automatically)
-   - **Sign-in redirect URIs:** `http://localhost:5173/login/callback`
-   - **Sign-out redirect URIs:** `http://localhost:5173`
+   - **Sign-in redirect URIs:** `http://localhost:5174/login/callback`
+   - **Sign-out redirect URIs:** `http://localhost:5174`
    - **Trusted Origins:**
-     - `http://localhost:5173` (Type: CORS and Redirect)
+     - `http://localhost:5174` (Type: CORS and Redirect)
 5. Save and note the **Client ID**
 
 ### Add Users and Groups
@@ -127,15 +127,15 @@ npm run dev
 
 ```bash
 # Health check
-curl https://localhost:7001/health
+curl https://localhost:7200/health
 
 # Swagger UI
-# Open https://localhost:7001/swagger in browser
+# Open https://localhost:7200/swagger in browser
 ```
 
 ### Test Frontend
 
-1. Open http://localhost:5173
+1. Open http://localhost:5174
 2. Click "Sign in with Okta"
 3. Complete Okta login
 4. Should redirect to Dashboard
@@ -296,8 +296,8 @@ npm run preview
 
 ## Next Steps
 
-1. ✅ Backend running at https://localhost:7001
-2. ✅ Frontend running at http://localhost:5173
+1. ✅ Backend running at https://localhost:7200
+2. ✅ Frontend running at http://localhost:5174
 3. ✅ Can authenticate with Okta
 4. ✅ Can access Swagger UI
 

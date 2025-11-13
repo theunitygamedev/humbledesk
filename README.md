@@ -120,7 +120,7 @@ This project follows **Clean Architecture** principles with clear separation of 
    dotnet run
    ```
 
-   API will be available at `https://localhost:7001` (or configured port)
+   API will be available at `https://localhost:7200` (or configured port)
 
 ### Frontend Setup
 
@@ -136,7 +136,7 @@ This project follows **Clean Architecture** principles with clear separation of 
 
 3. **Create `.env.local`** file (copy from `.env.example`):
    ```env
-   VITE_API_BASE_URL=https://localhost:7001/api
+   VITE_API_BASE_URL=https://localhost:7200/api
    VITE_OKTA_ISSUER=https://your-domain.okta.com/oauth2/default
    VITE_OKTA_CLIENT_ID=your-spa-client-id
    ```
@@ -146,7 +146,7 @@ This project follows **Clean Architecture** principles with clear separation of 
    npm run dev
    ```
 
-   Client will be available at `http://localhost:5173`
+   Client will be available at `http://localhost:5174`
 
 ### Okta Configuration
 
@@ -156,9 +156,9 @@ This project follows **Clean Architecture** principles with clear separation of 
 
 2. Create a **Single-Page Application** for the frontend:
    - Grant type: Authorization Code with PKCE
-   - Sign-in redirect: `http://localhost:5173/login/callback`
-   - Sign-out redirect: `http://localhost:5173`
-   - Trusted Origins: `http://localhost:5173`
+   - Sign-in redirect: `http://localhost:5174/login/callback`
+   - Sign-out redirect: `http://localhost:5174`
+   - Trusted Origins: `http://localhost:5174`
 
 3. Assign users to the application and configure groups/roles
 

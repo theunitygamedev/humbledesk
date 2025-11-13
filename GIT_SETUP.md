@@ -150,7 +150,7 @@ cp .env.example .env.local
 
 2. Edit `.env.local` with your values:
 ```env
-VITE_API_BASE_URL=https://localhost:7001/api
+VITE_API_BASE_URL=https://localhost:7200/api
 VITE_OKTA_ISSUER=https://dev-xxxxx.okta.com/oauth2/default
 VITE_OKTA_CLIENT_ID=0oaxxxxxxxxxxxxx
 ```
