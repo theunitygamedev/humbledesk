@@ -1,6 +1,4 @@
 import { useOktaAuth } from '@okta/okta-react';
-import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '../lib/api';
 
 export default function Dashboard() {
   const { oktaAuth, authState } = useOktaAuth();

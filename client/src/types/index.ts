@@ -1,62 +1,35 @@
-export enum AudienceType {
-  Employee = 1,
-  BoardDirector = 2,
-}
+// HumbleDesk Types
+// Types for the ticketing system will be added here
 
-export enum QuestionSetStatus {
-  Draft = 1,
-  Preview = 2,
-  Published = 3,
-  Archived = 4,
-}
+// Example types based on PRD:
+// export interface Ticket {
+//   id: string;
+//   tenantId: string;
+//   title: string;
+//   description: string;
+//   status: TicketStatus;
+//   priority: TicketPriority;
+//   assigneeId?: string;
+//   category: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
-export enum QuestionType {
-  YesNo = 1,
-  ShortText = 2,
-  LongText = 3,
-  YesNoWithConditionalText = 4,
-  SingleSelect = 5,
-  MultiSelect = 6,
-  Date = 7,
-  Number = 8,
-  FileUpload = 9,
-  Attestation = 10,
-}
+// export const TicketStatus = {
+//   New: 'New',
+//   InProgress: 'InProgress',
+//   Waiting: 'Waiting',
+//   Resolved: 'Resolved',
+//   Closed: 'Closed',
+// } as const;
 
-export interface QuestionSetDto {
-  id: string;
-  name: string;
-  audienceType: AudienceType;
-  version: number;
-  status: QuestionSetStatus;
-  createdBy: string;
-  createdAt: string;
-  sections: SectionDto[];
-}
+// export type TicketStatus = typeof TicketStatus[keyof typeof TicketStatus];
 
-export interface SectionDto {
-  id: string;
-  order: number;
-  title: string;
-  description?: string;
-  questions: QuestionDto[];
-}
+// export const TicketPriority = {
+//   Low: 'Low',
+//   Medium: 'Medium',
+//   High: 'High',
+//   Urgent: 'Urgent',
+// } as const;
 
-export interface QuestionDto {
-  id: string;
-  order: number;
-  textHtml: string;
-  helpHtml?: string;
-  type: QuestionType;
-  required: boolean;
-  constraintsJson?: string;
-  tags?: string;
-  options: OptionDto[];
-}
-
-export interface OptionDto {
-  id: string;
-  value: string;
-  label: string;
-  order: number;
-}
+// export type TicketPriority = typeof TicketPriority[keyof typeof TicketPriority];
