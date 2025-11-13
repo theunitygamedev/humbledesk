@@ -12,8 +12,8 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/coi-system.git
-cd coi-system
+git clone https://github.com/yourusername/humbledesk.git
+cd humbledesk
 
 # Verify .gitignore files are present
 ls -la .gitignore
@@ -24,11 +24,11 @@ ls -la client/.gitignore
 
 ### Configure Environment
 
-Create `src/COI.API/appsettings.Development.json`:
+Create `src/HD.API/appsettings.Development.json`:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=COIDB;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=HumbleDeskDB;Trusted_Connection=True;MultipleActiveResultSets=true"
   },
   "Okta": {
     "Authority": "https://dev-XXXXXXX.okta.com/oauth2/default",
@@ -47,12 +47,12 @@ Create `src/COI.API/appsettings.Development.json`:
 dotnet restore
 
 # Create database
-cd src/COI.Infrastructure
-dotnet ef migrations add InitialCreate --startup-project ../COI.API
-dotnet ef database update --startup-project ../COI.API
+cd src/HD.Infrastructure
+dotnet ef migrations add InitialCreate --startup-project ../HD.API
+dotnet ef database update --startup-project ../HD.API
 
 # Run API
-cd ../COI.API
+cd ../HD.API
 dotnet run
 
 # API will be available at https://localhost:7001
@@ -105,7 +105,7 @@ npm run dev
 2. Choose "OIDC - OpenID Connect"
 3. Choose "Single-Page Application"
 4. Configure:
-   - **App Name:** COI Management System
+   - **App Name:** HumbleDesk
    - **Grant Type:** Authorization Code (PKCE enabled automatically)
    - **Sign-in redirect URIs:** `http://localhost:5173/login/callback`
    - **Sign-out redirect URIs:** `http://localhost:5173`
@@ -208,10 +208,10 @@ dotnet build
 ```
 conflict/
 ├── src/
-│   ├── COI.Domain/           # ← Entities, enums (no dependencies)
-│   ├── COI.Application/      # ← Use cases, DTOs, interfaces
-│   ├── COI.Infrastructure/   # ← EF Core, database
-│   └── COI.API/              # ← Web API, controllers
+│   ├── HD.Domain/           # ← Entities, enums (no dependencies)
+│   ├── HD.Application/      # ← Use cases, DTOs, interfaces
+│   ├── HD.Infrastructure/   # ← EF Core, database
+│   └── HD.API/              # ← Web API, controllers
 ├── client/                   # ← React frontend
 │   ├── src/
 │   │   ├── config/          # ← Okta config
@@ -255,13 +255,13 @@ git push origin feature/your-feature
 
 ```bash
 # Add migration
-cd src/COI.Infrastructure
-dotnet ef migrations add YourMigrationName --startup-project ../COI.API
+cd src/HD.Infrastructure
+dotnet ef migrations add YourMigrationName --startup-project ../HD.API
 
 # Review generated migration in Migrations/ folder
 
 # Apply migration
-dotnet ef database update --startup-project ../COI.API
+dotnet ef database update --startup-project ../HD.API
 ```
 
 ### Frontend Changes
@@ -303,10 +303,10 @@ npm run preview
 
 **Now you can start developing:**
 
-- Create more API endpoints in `src/COI.API/Controllers/`
-- Add use cases in `src/COI.Application/`
+- Create more API endpoints in `src/HD.API/Controllers/`
+- Add use cases in `src/HD.Application/`
 - Build UI components in `client/src/`
-- Add database entities in `src/COI.Domain/Entities/`
+- Add database entities in `src/HD.Domain/Entities/`
 
 ## Resources
 
@@ -320,6 +320,6 @@ npm run preview
 ## Getting Help
 
 - Check existing issues in repository
-- Review logs in `src/COI.API/logs/`
+- Review logs in `src/HD.API/logs/`
 - Use browser DevTools for frontend issues
 - Check Application Insights (if configured)

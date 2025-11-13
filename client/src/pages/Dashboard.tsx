@@ -15,7 +15,7 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">COI Management System</h1>
+              <h1 className="text-xl font-bold text-gray-900">HumbleDesk</h1>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
@@ -35,22 +35,22 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to COI System</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to HumbleDesk</h2>
             <p className="text-gray-600 mb-4">
-              This is the Conflict of Interest Management System dashboard.
+              AI-Powered Ticketing System for efficient support management.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="border rounded-lg p-4">
-                <h3 className="font-semibold text-lg mb-2">My Assignments</h3>
-                <p className="text-gray-600 text-sm">View and complete your COI disclosures</p>
+                <h3 className="font-semibold text-lg mb-2">My Tickets</h3>
+                <p className="text-gray-600 text-sm">View and manage your support tickets</p>
               </div>
               <div className="border rounded-lg p-4">
-                <h3 className="font-semibold text-lg mb-2">Question Builder</h3>
-                <p className="text-gray-600 text-sm">Create and manage questionnaires</p>
+                <h3 className="font-semibold text-lg mb-2">Create Ticket</h3>
+                <p className="text-gray-600 text-sm">Submit new support requests with AI assistance</p>
               </div>
               <div className="border rounded-lg p-4">
-                <h3 className="font-semibold text-lg mb-2">Review Queue</h3>
-                <p className="text-gray-600 text-sm">Process submissions awaiting review</p>
+                <h3 className="font-semibold text-lg mb-2">Knowledge Base</h3>
+                <p className="text-gray-600 text-sm">Browse solutions and common issues</p>
               </div>
             </div>
           </div>

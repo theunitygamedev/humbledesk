@@ -81,7 +81,7 @@ az webapp config appsettings set \
 
 ```bash
 # Publish the application
-cd src/COI.API
+cd src/HD.API
 dotnet publish -c Release -o ./publish
 
 # Deploy to Azure
@@ -96,7 +96,7 @@ az webapp deploy \
 Option A: Run locally against Azure SQL:
 ```bash
 # Update connection string in appsettings.json temporarily
-dotnet ef database update --project ../COI.Infrastructure --startup-project .
+dotnet ef database update --project ../HD.Infrastructure --startup-project .
 ```
 
 Option B: Enable migration on startup (add to Program.cs):
@@ -239,18 +239,18 @@ jobs:
 
       - name: Build
         run: dotnet build --configuration Release
-        working-directory: ./src/COI.API
+        working-directory: ./src/HD.API
 
       - name: Publish
         run: dotnet publish -c Release -o ./publish
-        working-directory: ./src/COI.API
+        working-directory: ./src/HD.API
 
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'coi-api'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./src/COI.API/publish
+          package: ./src/HD.API/publish
 
   build-and-deploy-spa:
     runs-on: ubuntu-latest

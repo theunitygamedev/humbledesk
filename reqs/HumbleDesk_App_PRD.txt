@@ -1,0 +1,173 @@
+Product Requirements Document (PRD)
+HumbleDesk (AI-Powered Ticketing System SaaS)
+Owner: Frederik Koetje
+Date: Nov 13, 2025
+------------------------------------------------------------
+
+== Scope & Summary ==
+HumbleDesk is a multi-tenant SaaS helpdesk platform designed for IT departments, service vendors, and managed providers 
+to manage, triage, and resolve support requests efficiently. 
+The system digitizes ticket intake, automates workflows, and integrates an AI assistant that helps users create, classify, 
+and resolve tickets faster.
+
+Architecture Summary:
+A Clean Architecture web application with a React SPA front-end, ASP.NET Core (.NET 8) API, and Azure SQL Database backend.
+Authentication is handled through Okta (OIDC PKCE). 
+The system is hosted on Azure App Services (Linux), optionally fronted by Azure Front Door + WAF for global routing, 
+security, and caching.
+
+------------------------------------------------------------
+== Tech Stack Summary ==
+
+[Frontend]
+- React 18 + TypeScript 5 (Vite)
+- React Router v6
+- @tanstack/react-query; Zustand (or Redux Toolkit)
+- React Hook Form + Zod
+- Okta OIDC — @okta/okta-react, @okta/okta-auth-js (Authorization Code with PKCE)
+- Tailwind CSS + Radix UI / shadcn/ui
+- Axios interceptor (Bearer token, 401 renew)
+- Testing: Vitest, React Testing Library, Playwright
+- API typing: openapi-typescript (or orval)
+
+[Backend / API]
+- .NET 8 — ASP.NET Core Web API
+- Clean Architecture (Domain, Application, Infrastructure, API)
+- CQRS / Mediator: MediatR; Validation: FluentValidation (pipeline)
+- Mapping: AutoMapper; Resilience: Polly
+- AuthN/AuthZ: JWT Bearer (Okta OIDC) + policy-based authorization (scopes/roles)
+- API Versioning: Asp.Versioning.Http; Docs: Swashbuckle / NSwag (OAuth2/PKCE)
+- Logging / Tracing: Serilog + Application Insights
+
+[Data]
+- Azure SQL Database; EF Core 8 (code-first migrations in Infrastructure)
+- Optional Outbox table for reliable events
+
+[Azure Hosting & Cloud]
+- Azure App Service (Linux): separate apps for SPA and API
+- Azure Front Door + WAF (custom domains, TLS, caching)
+- Azure Key Vault (secrets; API via Managed Identity)
+- Azure Application Insights + Log Analytics (traces, metrics, dashboards)
+- Azure App Configuration (feature flags)
+- Azure Cache for Redis (optional); WebJobs / Azure Functions (optional background tasks or outbox processor)
+
+[Security & Auth (Okta)]
+- Okta SPA app (OIDC): Authorization Code with PKCE (no client secret in browser)
+- Tokens in memory / session; Access Token used for API calls
+- API validates issuer/audience/JWKS; checks scopes / roles
+- Strict CORS (SPA origin only); strong CSP; no secrets in client bundle
+
+------------------------------------------------------------
+== Architecture (Clean Architecture) ==
+- Domain: Entities (Ticket, Comment, Attachment, Tenant, SLA, AIInsight), Value Objects, Domain Events
+- Application: Use cases (CQRS handlers for ticket CRUD, AI assist, routing, SLA tracking), validators, DTOs, mappings
+- Infrastructure: EF Core repositories, external adapters (email, AI, storage), outbox/event publisher
+- API (Presentation): ASP.NET Core controllers/endpoints, auth, ProblemDetails, DI composition root
+- Dependency rule: Client → API → Application → Domain; Infrastructure referenced only by API for DI
+
+------------------------------------------------------------
+== Features — HumbleDesk Ticketing System ==
+
+[Roles & Permissions]
+System Admin    - Oversees tenants, usage, billing, integrations
+Tenant Admin    - Manages users, categories, workflows, AI settings
+Agent/Technician- Handles assigned tickets, updates status, adds comments
+End User        - Submits tickets, tracks status, adds attachments
+Vendor          - Manages service requests and updates ticket progress
+
+------------------------------------------------------------
+[Ticket Lifecycle Management]
+- Full CRUD for tickets with custom fields per tenant
+- Ticket states: New → In Progress → Waiting → Resolved → Closed
+- Attachments, tags, and comments (public/private)
+- Audit trail of all actions
+- Email integration (auto-create tickets from inbound emails)
+- Notifications via email, Teams, or Slack
+
+------------------------------------------------------------
+[AI Assistance (Central Differentiator)]
+1. AI Ticket Assistant – Natural-language input to generate title, category, urgency, and description
+2. AI Classification & Routing – Auto-categorizes and assigns to teams based on past patterns
+3. AI Summarization – Summarizes threads and activity into brief updates
+4. AI Resolution Suggestions – Recommends solutions based on KB and past tickets (RAG)
+5. AI Insights Dashboard – Identifies recurring issues and automation opportunities
+
+------------------------------------------------------------
+[Automation & Workflows]
+- SLA rules and escalation triggers
+- Auto-close inactive tickets after set duration
+- Macros for bulk updates
+- Conditional notifications (email / chat / webhook)
+
+------------------------------------------------------------
+[Multi-Tenant Structure]
+- Logical tenant isolation in Azure SQL schemas
+- Configurable branding (theme, logo, email templates)
+- Role-based access per tenant
+- Shared codebase with isolated data domains
+
+------------------------------------------------------------
+[Dashboards & Analytics]
+- Real-time ticket metrics (open, resolved, SLA breaches)
+- AI insight overlay (trends, common issues, response time)
+- Export to CSV/XLSX/PDF
+
+------------------------------------------------------------
+[Knowledge Base Integration]
+- Searchable articles linked to tickets
+- AI suggests relevant articles on ticket creation or update
+- Agents can promote resolved tickets to KB drafts
+
+------------------------------------------------------------
+[Integrations]
+- Okta SSO (groups → roles)
+- Email (Azure Communication Services / SendGrid)
+- Slack / Teams webhooks
+- REST API / Webhooks for external automation
+- Optional inventory or asset management sync
+
+------------------------------------------------------------
+[Security & Compliance]
+- Role / claim-based authorization; least privilege access
+- PII encryption at rest and in transit
+- Append-only audit log of user actions
+- File validation and optional virus scan on upload
+- GDPR compliance (data export / deletion)
+
+------------------------------------------------------------
+[Data Model (Initial Draft)]
+Tenant(Id, Name, PlanTier, CreatedAt)
+User(Id, TenantId, Role, Email, Name)
+Ticket(Id, TenantId, Title, Description, Status, Priority, AssigneeId, Category)
+Comment(Id, TicketId, AuthorId, Body, Visibility, CreatedAt)
+Attachment(Id, TicketId, BlobUrl, FileName, Size, Type)
+SLA(Id, TenantId, Name, ResponseHours, ResolutionHours)
+AIInsight(Id, TenantId, TicketId, SuggestionText, Confidence)
+AuditEvent(Id, ActorId, Entity, EntityId, Action, PayloadJson, CreatedAt)
+
+------------------------------------------------------------
+[Key User Stories & Acceptance Criteria]
+- User enters "Printer keeps jamming"; AI suggests category = "Hardware", priority = "Medium"
+- AI routes ticket to Facilities team based on past data
+- Agent clicks "Suggest Fix" → AI offers resolution steps
+- AI summarizes long threads for quick catch-up
+- SLA breach auto-escalates to Tenant Admin
+- Weekly AI report shows top 5 recurring issues
+
+------------------------------------------------------------
+[Non-Functional Requirements]
+Performance  : <300 ms p95 API; <2 s SPA load on 4G
+Scalability  : 10k+ active users per tenant; 1M tickets
+Reliability  : Resume-safe autosave; validated state transitions
+Availability : 99.9% uptime
+Security     : Okta OIDC; tenant isolation; PII encryption
+Observability: Application Insights metrics, logs, dashboards
+
+------------------------------------------------------------
+[Future Enhancements]
+- Voice-based ticket entry assistant
+- Predictive SLA alerts using AI forecasting
+- Sentiment analysis for comments
+- IoT device integration for auto-ticket creation
+- Tenant-level fine-tuned AI models
+------------------------------------------------------------

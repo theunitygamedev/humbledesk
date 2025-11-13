@@ -129,7 +129,7 @@ Ensures consistent line endings and proper handling of different file types:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=COIDB;Trusted_Connection=True;"
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=HumbleDeskDB;Trusted_Connection=True;"
   },
   "Okta": {
     "Authority": "https://dev-xxxxx.okta.com/oauth2/default",
@@ -173,10 +173,10 @@ git status
 git status | grep -E "\.env|appsettings\.Development"
 
 # First commit
-git commit -m "Initial commit: COI Management System with Clean Architecture"
+git commit -m "Initial commit: HumbleDesk AI-Powered Ticketing System with Clean Architecture"
 
 # Add remote and push
-git remote add origin https://github.com/yourusername/coi-system.git
+git remote add origin https://github.com/yourusername/humbledesk.git
 git branch -M main
 git push -u origin main
 ```

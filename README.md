@@ -1,26 +1,26 @@
-# Conflict of Interest (COI) Management System
+# HumbleDesk - AI-Powered Ticketing System
 
-A comprehensive web application for managing Conflict of Interest disclosures with Clean Architecture, ASP.NET Core 8, React, and Okta authentication.
+A multi-tenant SaaS helpdesk platform designed for IT departments, service vendors, and managed providers to manage, triage, and resolve support requests efficiently with AI assistance.
 
 ## Architecture
 
 This project follows **Clean Architecture** principles with clear separation of concerns:
 
-- **Domain Layer** (`COI.Domain`): Core business entities, enums, and domain logic - no external dependencies
-- **Application Layer** (`COI.Application`): Use cases, DTOs, interfaces, MediatR commands/queries, FluentValidation
-- **Infrastructure Layer** (`COI.Infrastructure`): EF Core, database configurations, external service implementations
-- **API Layer** (`COI.API`): ASP.NET Core Web API, controllers, authentication, middleware
+- **Domain Layer** (`HD.Domain`): Core business entities, enums, and domain logic - no external dependencies
+- **Application Layer** (`HD.Application`): Use cases, DTOs, interfaces, MediatR commands/queries, FluentValidation
+- **Infrastructure Layer** (`HD.Infrastructure`): EF Core, database configurations, external service implementations
+- **API Layer** (`HD.API`): ASP.NET Core Web API, controllers, authentication, middleware
 - **Client** (`client/`): React 18 + TypeScript SPA with Vite, Tailwind CSS, Okta integration
 
 ## Tech Stack
 
 ### Backend
 - **.NET 8** - ASP.NET Core Web API
-- **Entity Framework Core 8** - ORM with SQL Server
+- **Entity Framework Core 8** - ORM with Azure SQL Database
 - **MediatR** - CQRS pattern implementation
 - **FluentValidation** - Input validation
 - **AutoMapper** - Object mapping
-- **Serilog** - Structured logging
+- **Serilog** - Structured logging with Application Insights
 - **Swashbuckle** - OpenAPI/Swagger documentation
 - **Okta OIDC** - JWT Bearer authentication
 
@@ -34,34 +34,55 @@ This project follows **Clean Architecture** principles with clear separation of 
 - **@okta/okta-react** - Okta authentication with PKCE
 - **Axios** - HTTP client with interceptors
 - **Tailwind CSS** - Utility-first styling
-- **Radix UI** - Accessible UI components
+- **Radix UI** / **shadcn/ui** - Accessible UI components
+
+### Azure Hosting & Cloud
+- **Azure App Service** (Linux) - Separate apps for SPA and API
+- **Azure Front Door + WAF** - Custom domains, TLS, caching
+- **Azure SQL Database** - Production database
+- **Azure Key Vault** - Secrets management via Managed Identity
+- **Azure Application Insights + Log Analytics** - Monitoring and observability
+- **Azure App Configuration** - Feature flags
 
 ## Features
 
 ### Core Functionality
-- **Question Builder**: WYSIWYG editor for creating configurable questionnaires
-- **Multiple Answer Types**: Yes/No, Text, Conditional, Select, Date, Number, File Upload, Attestation
-- **Branching Logic**: Conditional question display based on answers
-- **Assignment Management**: Assign questionnaires to employees/board members
-- **Submission Workflow**: Draft, Submit, Review, Approve process
-- **Review Queue**: Dedicated interface for reviewers
-- **Audit Trail**: Complete history of all actions
-- **Reporting**: Dashboards, exports (CSV/PDF)
+- **Ticket Management**: Full CRUD for tickets with custom fields per tenant
+- **AI Ticket Assistant**: Natural-language input to generate title, category, urgency, and description
+- **AI Classification & Routing**: Auto-categorizes and assigns tickets based on past patterns
+- **AI Summarization**: Summarizes threads and activity into brief updates
+- **AI Resolution Suggestions**: Recommends solutions based on knowledge base and past tickets (RAG)
+- **AI Insights Dashboard**: Identifies recurring issues and automation opportunities
+
+### Workflow & Automation
+- **Ticket Lifecycle**: New → In Progress → Waiting → Resolved → Closed
+- **SLA Management**: Rules and escalation triggers
+- **Auto-close**: Inactive tickets after set duration
+- **Macros**: Bulk updates
+- **Notifications**: Email, Teams, Slack
+
+### Multi-Tenant Structure
+- Logical tenant isolation in Azure SQL schemas
+- Configurable branding (theme, logo, email templates)
+- Role-based access per tenant
+- Shared codebase with isolated data domains
 
 ### Security
 - **Okta SSO** with OIDC Authorization Code + PKCE flow
 - **JWT Bearer Authentication** on API
-- **Role-based Authorization** (Employee, Director, LegalAdmin, Reviewer, SystemAdmin)
+- **Role-based Authorization** (System Admin, Tenant Admin, Agent/Technician, End User, Vendor)
 - **CORS** protection
 - **HTTPS** enforcement
 - **Input validation** on all endpoints
+- **PII encryption** at rest and in transit
+- **GDPR compliance** (data export/deletion)
 
 ## Getting Started
 
 ### Prerequisites
 - .NET 8 SDK
 - Node.js 18+ and npm
-- SQL Server (LocalDB for development)
+- SQL Server (LocalDB for development, Azure SQL for production)
 - Okta Developer Account
 
 ### Backend Setup
@@ -71,10 +92,10 @@ This project follows **Clean Architecture** principles with clear separation of 
    dotnet restore
    ```
 
-2. **Update connection string** in `src/COI.API/appsettings.json`:
+2. **Update connection string** in `src/HD.API/appsettings.json`:
    ```json
    "ConnectionStrings": {
-     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=COIDB;Trusted_Connection=True;"
+     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=HumbleDeskDB;Trusted_Connection=True;"
    }
    ```
 
@@ -88,14 +109,14 @@ This project follows **Clean Architecture** principles with clear separation of 
 
 4. **Create database migration** (first time only):
    ```bash
-   cd src/COI.Infrastructure
-   dotnet ef migrations add InitialCreate --startup-project ../COI.API/COI.API.csproj
-   dotnet ef database update --startup-project ../COI.API/COI.API.csproj
+   cd src/HD.Infrastructure
+   dotnet ef migrations add InitialCreate --startup-project ../HD.API/HD.API.csproj
+   dotnet ef database update --startup-project ../HD.API/HD.API.csproj
    ```
 
 5. **Run the API**:
    ```bash
-   cd src/COI.API
+   cd src/HD.API
    dotnet run
    ```
 
@@ -144,63 +165,61 @@ This project follows **Clean Architecture** principles with clear separation of 
 ## Project Structure
 
 ```
-conflict/
+humbledesk/
 ├── src/
-│   ├── COI.Domain/              # Core domain entities
-│   │   ├── Common/              # Base classes, interfaces
-│   │   ├── Entities/            # Domain entities
-│   │   └── Enums/               # Enumerations
-│   ├── COI.Application/         # Application layer
-│   │   ├── Common/Interfaces/   # Abstraction interfaces
-│   │   ├── QuestionSets/        # Feature folders
-│   │   │   ├── Commands/        # Write operations
-│   │   │   ├── Queries/         # Read operations
-│   │   │   └── DTOs/            # Data transfer objects
+│   ├── HD.Domain/              # Core domain entities
+│   │   ├── Common/             # Base classes, interfaces
+│   │   ├── Entities/           # Domain entities
+│   │   └── Enums/              # Enumerations
+│   ├── HD.Application/         # Application layer
+│   │   ├── Common/Interfaces/  # Abstraction interfaces
+│   │   ├── QuestionSets/       # Feature folders (to be updated to Tickets)
+│   │   │   ├── Commands/       # Write operations
+│   │   │   ├── Queries/        # Read operations
+│   │   │   └── DTOs/           # Data transfer objects
 │   │   └── DependencyInjection.cs
-│   ├── COI.Infrastructure/      # Infrastructure layer
-│   │   ├── Data/                # EF Core DbContext
+│   ├── HD.Infrastructure/      # Infrastructure layer
+│   │   ├── Data/               # EF Core DbContext
 │   │   │   └── Configurations/ # Entity configurations
 │   │   └── DependencyInjection.cs
-│   └── COI.API/                 # Web API
-│       ├── Controllers/         # API controllers
-│       ├── Services/            # API services
-│       └── Program.cs           # Entry point
-├── client/                      # React frontend
+│   └── HD.API/                 # Web API
+│       ├── Controllers/        # API controllers
+│       ├── Services/           # API services
+│       └── Program.cs          # Entry point
+├── client/                     # React frontend
 │   ├── src/
-│   │   ├── config/             # Configuration
-│   │   ├── lib/                # Utilities, API client
-│   │   ├── pages/              # Page components
-│   │   ├── types/              # TypeScript types
-│   │   ├── App.tsx             # Root component
-│   │   └── main.tsx            # Entry point
+│   │   ├── config/            # Configuration
+│   │   ├── lib/               # Utilities, API client
+│   │   ├── pages/             # Page components
+│   │   ├── types/             # TypeScript types
+│   │   ├── App.tsx            # Root component
+│   │   └── main.tsx           # Entry point
 │   └── package.json
-├── COI.sln                      # Solution file
+├── reqs/                      # Requirements and PRD
+├── HumbleDesk.sln             # Solution file
 └── README.md
 ```
 
 ## Database Schema
 
-Key entities:
-- **QuestionSet**: Questionnaire templates with versioning
-- **Section**: Logical groupings of questions
-- **Question**: Individual questions with types and constraints
-- **Option**: Answer choices for select-type questions
-- **BranchRule**: Conditional logic for question visibility
-- **Assignment**: Questionnaires assigned to users
-- **Submission**: User responses with attestation
-- **Answer**: Individual question responses
-- **Review**: Review workflow and decisions
-- **Comment**: Threaded discussions on submissions
-- **Attachment**: File uploads
+Key entities (to be implemented):
+- **Tenant**: Multi-tenant organization data
+- **User**: Users within tenants with roles
+- **Ticket**: Support tickets with AI-enhanced fields
+- **Comment**: Threaded discussions on tickets (public/private)
+- **Attachment**: File uploads linked to tickets
+- **SLA**: Service level agreement rules per tenant
+- **AIInsight**: AI-generated suggestions and insights
 - **AuditEvent**: Complete audit trail
 
 ## API Endpoints
 
-### Question Sets
-- `GET /api/questionsets/{id}` - Get question set by ID
-- `POST /api/questionsets` - Create new question set (LegalAdmin only)
-
-More endpoints to be implemented for full CRUD operations.
+### Tickets (to be implemented)
+- `GET /api/tickets` - List tickets with filtering
+- `GET /api/tickets/{id}` - Get ticket details
+- `POST /api/tickets` - Create new ticket with AI assistance
+- `PUT /api/tickets/{id}` - Update ticket
+- `POST /api/tickets/{id}/ai-suggest` - Get AI resolution suggestions
 
 ## Development
 
@@ -232,6 +251,7 @@ npm run build
 3. Database: Azure SQL Database
 4. Configure Azure Key Vault for secrets
 5. Set up Application Insights for monitoring
+6. Optional: Azure Front Door + WAF for global routing and security
 
 ### Environment Variables
 - Backend: Configure in Azure App Service Configuration

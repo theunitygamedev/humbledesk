@@ -1,6 +1,0 @@
-@COI.API_HostAddress = http://localhost:5051
-
-GET {{COI.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
