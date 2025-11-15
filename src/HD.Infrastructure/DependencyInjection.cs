@@ -1,5 +1,6 @@
 using HD.Application.Common.Interfaces;
 using HD.Infrastructure.Data;
+using HD.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,8 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<ApplicationDbContext>());
+
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         return services;
     }

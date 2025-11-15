@@ -1,4 +1,5 @@
 using HD.Application.Common.Interfaces;
+using HD.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HD.Infrastructure.Data;
@@ -10,11 +11,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
     }
 
-    // DbSets for HumbleDesk entities will be added here
-    // Example:
-    // public DbSet<Ticket> Tickets => Set<Ticket>();
-    // public DbSet<Comment> Comments => Set<Comment>();
-    // public DbSet<Attachment> Attachments => Set<Attachment>();
+    public DbSet<Tenant> Tenants => Set<Tenant>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Ticket> Tickets => Set<Ticket>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

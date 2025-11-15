@@ -1,6 +1,4 @@
-using HD.API.Services;
 using HD.Application;
-using HD.Application.Common.Interfaces;
 using HD.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
@@ -80,7 +78,6 @@ builder.Services.AddCors(options =>
 
 // Add application services
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // Add Application and Infrastructure layers
 builder.Services.AddApplication();
@@ -97,7 +94,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "COI API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HumbleDesk API V1");
     });
 }
 
@@ -114,7 +111,7 @@ app.MapHealthChecks("/health");
 
 try
 {
-    Log.Information("Starting COI API");
+    Log.Information("Starting HumbleDesk API");
     app.Run();
 }
 catch (Exception ex)
